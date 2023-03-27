@@ -1,7 +1,7 @@
 import Container from "./Container.js";
 import Controller from "./Controller.js";
 import TaskQueue from "./JsQueue.js";
-import npm from 'npm-programmatic';
+//import npm from 'npm-programmatic';
 import { readFile } from 'fs/promises';
 import fs from 'fs';
 import {SFLOW} from './Nodes.js';
@@ -30,7 +30,7 @@ export default class Runtime{
         }
         //this.pkgs = new Map();
     }
-
+    /*
     installPkg(name, target, cb){
         var _self = this;
         npm.install([name], {
@@ -56,7 +56,7 @@ export default class Runtime{
             //this.pkgs.set(name, "failed");
         });
     }
-
+    */
 
     async loadTasks(folder, pgkName){
         var _self = this;
