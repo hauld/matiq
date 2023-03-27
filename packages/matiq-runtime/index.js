@@ -6,4 +6,4 @@ export {
     PARALLEL,
     HANDLER,
     Runtime,
-} from './src/MaticWork.js';
+} from './src/Matiq.js';

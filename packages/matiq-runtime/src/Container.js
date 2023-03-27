@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import { v4 as uuidv4 } from 'uuid';
 import {getInit} from './Runner.js';
-import {SFLOW} from './Nodes.js';
 
 export default class Container extends EventEmitter {
     constructor() {
@@ -12,23 +11,8 @@ export default class Container extends EventEmitter {
         this.runners = {};
         this.handlers = new Map();
     }
-    async loadCodeFlow(path, controller){
-        const { default: Flow } = await import(`${path}?update=${Date.now()}`);
-        let flow = Flow();
-        this.flows[flow.id] = flow;
-        this.flows[flow.id].entry.tasks.forEach((task, index, arr )=> {
-            try{
-                arr[index]["nip"] = flow.entry.links.filter(link => link.to === task.id).length;
-                arr[index]["spinOff"] = task.spin(getInit(this, flow, task, controller));
-            } catch {
-                // Spinning not available
-            }
-        });
-    }
 
-
-    async loadSFlow(flowString, controller){
-        let flow = SFLOW(flowString, this.handlers);
+    async loadFlow(flow, controller){
         this.flows[flow.id] = flow;
         this.flows[flow.id].entry.tasks.forEach((task, index, arr )=> {
             try{
@@ -129,7 +113,7 @@ export default class Container extends EventEmitter {
     getNextTasks(flowId, taskId){
         try {
             const {flow} = this.validateTask(flowId, taskId);
-            let links = flow.nodes.links.filter(link => link.from === taskId);
+            let links = flow.entry.links.filter(link => link.from === taskId);
             return links;
         } catch (error){
             return [];

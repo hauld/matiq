@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "isolated-vm": "^4.3.6",
+    "pyodide": "^0.22.1"
+  },
+  "name": "matiq-workers",
+  "version": "0.0.1",
+  "description": "Data workers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "data",
+    "worker"
+  ],
+  "author": "Hau Le",
+  "license": "MIT"
+}

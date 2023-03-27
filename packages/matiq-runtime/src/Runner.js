@@ -25,6 +25,7 @@ export const getRunner = (container, queue, eventObj) => {
             return container.runners[eventObj.content.runId].trigger;
         },
         runJSCode: (script) => { return EVAL(`${script}`)},
+        runPYCode: (task, donne) => { return container.adapters['VmPY'].run(task, donne)},
     }
 }
 
@@ -66,7 +67,10 @@ export const getInit = (container, flow, task, controller) => {
                     { 
                         type: event,
                         content: {
-                            task: {id: task.id},
+                            task: {
+                                id: task.id,
+                                flowId: flow.id
+                            },
                             input: {...data}
                         },
                         trigger: job
@@ -78,7 +82,7 @@ export const getInit = (container, flow, task, controller) => {
                 true,
                 'America/Los_Angeles'
             );
-            //job.start();
+            job.start();
         }
     }
 }

@@ -62,7 +62,7 @@ export default class Controller extends EventEmitter {
                     input: inputContent
                 }
             }
-            console.log('task_input:', nextEvent.content.task.id);
+            //console.log('task_input:', nextEvent.content.task.id);
             if(inputReady){
                 // Push event to queue
                 queue.pushTask(nextEvent);
@@ -73,26 +73,26 @@ export default class Controller extends EventEmitter {
 
         this.on(TASK_POP, (eventObj) => {
             // Pop event and run
-            console.log('task_pop:', eventObj.content.task.id);
+            //console.log('task_pop:', eventObj.content.task.id);
             this.runTask(container, queue, eventObj);
         })
 
         this.on(TASK_WAIT_INPUT,(eventObj) => {
             eventObj.type = TASK_WAIT_INPUT;
             container.updRun(eventObj);
-            console.log('task_wait_input:', eventObj.content.task.id);
+            //console.log('task_wait_input:', eventObj.content.task.id);
         })
 
         this.on(TASK_QUEUED,(eventObj) => {
             eventObj.type = TASK_QUEUED;
             container.updRun(eventObj);
-            console.log('task_queued:', eventObj.content.task.id);
+            //console.log('task_queued:', eventObj.content.task.id);
         })
     
         this.on(TASK_STARTED,(eventObj) => {
             eventObj.type = TASK_STARTED;            
             container.updRun(eventObj);
-            console.log('task_started:', eventObj.content.task.id);
+            //console.log('task_started:', eventObj.content.task.id);
         })
     
         this.on(TASK_DONE,(eventObj) => {
@@ -102,7 +102,7 @@ export default class Controller extends EventEmitter {
                     container.adapters['KV'].set(eventObj.content.task.runId, eventObj.content.result);
             }            
             container.updRun(eventObj);
-            console.log('task_done:', eventObj.content.task.id);
+            //console.log('task_done:', eventObj.content.task.id);
             process.nextTick(() => {
                 this.nextTask(container, eventObj);
             });
