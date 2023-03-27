@@ -15,12 +15,12 @@ export default class Runtime{
         this.controller = new Controller();
         this.queue = new TaskQueue();
         try{
-            this.config = JSON.parse(
-                fs.readFileSync(
-                    new URL(`${this.dirname}/matiq.json?update=${Date.now()}`, import.meta.url)
-                )
-            );
             try{
+                this.config = JSON.parse(
+                    fs.readFileSync(
+                        new URL(`${this.dirname}/matiq.json?update=${Date.now()}`, import.meta.url)
+                    )
+                );
                 //this.ws = new WebSocket(this.config.hqHost);
             } catch(error) {
                 console.log(error);

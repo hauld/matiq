@@ -1,0 +1,18 @@
+{
+  "name": "matiq-examples",
+  "version": "0.0.1",
+  "description": "Example of runing workflow",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "workflow"
+  ],
+  "author": "Hau Le",
+  "license": "MIT",
+  "dependencies": {
+    "matiq-runtime": "file:../matiq-runtime"
+  }
+}
