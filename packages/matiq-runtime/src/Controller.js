@@ -2,7 +2,8 @@ import EventEmitter from 'events';
 import { v4 as uuidv4 } from 'uuid';
 import EVAL from "./adapter/Vm.js";
 import {getRunner} from "./Runner.js";
-
+import Container from './Container.js'
+import JsQueue from './JsQueue.js'
 const TASK_INPUT = "task_input";
 const TASK_WAIT_INPUT = "task_wait_input";
 const TASK_STARTED = "task_started";
@@ -31,7 +32,7 @@ export default class Controller extends EventEmitter {
         }
     }
 
-    tick(container, queue){
+    tick(container = new Container(), queue = new JsQueue()){
         this.on(TASK_INPUT,(eventObj) => {
             const {
                 runId,
@@ -108,42 +109,60 @@ export default class Controller extends EventEmitter {
             });
         })
     }
-    nextTask(container, eventObj) {
+    nextTask(container = new Container(), eventObj) {
         const {
             runId,
             task,
             result
         } = eventObj.content;
         try{
-            container.getNextTasks(task.flowId, task.id).forEach(async (link ) =>  {
-                // TODO -- check condition
-                let check = true;
-                if(link.cond !== "" && link.cond !== undefined){
-                    let {success, output} = await EVAL(`${result} ${link.cond}`);
-                    if(success === true){
-                        check = output;
-                    } else check = false;
-                }
-                // Raise task input event
-                if (check) this.emit(TASK_INPUT, {
-                    event: this.id,
-                    type: TASK_INPUT,
-                    content: {
-                        runId: runId,
-                        task: {
-                            flowId: task.flowId,
-                            id: link.to},
-                        preTask: task,
-                        input: result
-                    }
+            let _self = this;
+            if(process.env.SMART_AGENT === "YES"){
+                container.autoNextTask(runId, task, result, (nextTask, flowId, args) => {
+                    _self.emit(TASK_INPUT, {
+                        event: _self.id,
+                        type: TASK_INPUT,
+                        content: {
+                            runId: runId,
+                            task: {
+                                flowId: flowId,
+                                id: nextTask.id},
+                            preTask: task,
+                            input: args
+                        }
+                    });
                 });
-            });
+            }else{
+                container.getNextTasks(task.flowId, task.id).forEach(async (link ) =>  {
+                    // TODO -- check condition
+                    let check = true;
+                    if(link.cond !== "" && link.cond !== undefined){
+                        let {success, output} = await EVAL(`${result} ${link.cond}`);
+                        if(success === true){
+                            check = output;
+                        } else check = false;
+                    }
+                    // Raise task input event
+                    if (check) this.emit(TASK_INPUT, {
+                        event: this.id,
+                        type: TASK_INPUT,
+                        content: {
+                            runId: runId,
+                            task: {
+                                flowId: task.flowId,
+                                id: link.to},
+                            preTask: task,
+                            input: result
+                        }
+                    });
+                });
+            }
         } catch(error) {
-            console.log(error);
+            console.log('Error: ',error);
         }
     }
 
-    runTask(container, queue, eventObj){
+    runTask(container = new Container(), queue = new JsQueue(), eventObj){
         const{
             task
         } = eventObj.content;

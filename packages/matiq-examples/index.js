@@ -1,7 +1,7 @@
 import {Runtime} from "matiq-runtime";
 import * as url from 'url';
 
-const script = 'flows/SendDiscount.js';
+const script = 'flows/calculator.js';
 const flowPath = new URL(script, import.meta.url);
 const __dirname = url.fileURLToPath(new URL('./', import.meta.url));
 

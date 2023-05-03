@@ -24,6 +24,15 @@ export const getRunner = (container, queue, eventObj) => {
         getTrigger: () => {
             return container.runners[eventObj.content.runId].trigger;
         },
+        log: (message, ...args) => {
+            console.log(message);
+            console.log.apply(null, args);
+            if(container.runners[eventObj.content.runId].trigger){
+                container.runners[eventObj.content.runId].trigger.forEach((res) => {
+                    res.write('data: ' + `${message}` + '\n\n');
+                })
+            }
+        },
         runJSCode: (script) => { return EVAL(`${script}`)},
         runPYCode: (task, donne) => { return container.adapters['VmPY'].run(task, donne)},
     }

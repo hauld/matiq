@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Automation Agent</title>
+</head>
+<body>
+	<h1>Automation Agent</h1>
+
+	<!-- Input text area for submitting data to the server -->
+	<label for="data">Goal:</label>
+	<textarea type="text" id="data" name="data" rows="5" cols="33"></textarea>
+	<button onclick="sendData()">Submit</button>
+
+	<!-- Div to display the server response using server-sent events -->
+	<div id="sse">
+		<p>...</p>
+	</div>
+
+	<script>
+		// Function to send data to the server using an HTTP POST request
+		function sendData() {
+            // Create a new EventSource object that connects to the server-sent events endpoint
+            var source = new EventSource("/result");
+            // Add an event listener to the source object that listens for "message" events
+            source.addEventListener("message", function(event) {
+                // When a "message" event is received, update the contents of the "sse" div with the event data
+                var sseDiv = document.getElementById("sse");
+                var eventData = event.data;
+                sseDiv.innerHTML =  sseDiv.innerHTML + "<p>" + eventData + "</p>" ;
+            });
+			var data = document.getElementById("data").value;
+			var xhr = new XMLHttpRequest();
+			xhr.open("POST", "/set_goal", true);
+			xhr.setRequestHeader('Content-Type', 'application/json');
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+						// The server response is sent as a server-sent event, so do nothing here
+				}
+			};
+			xhr.send(JSON.stringify({goal: data}));
+		}
+	</script>
+</body>
+</html>

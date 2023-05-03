@@ -11,6 +11,7 @@ class HttpServer{
         this.hasWS = hasWS;
         this.app = express();
         //TODO whitelist domain
+        this.app.use(express.static('public'))
 
         //Set CORS
         this.app.use(cors());

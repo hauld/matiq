@@ -6,4 +6,5 @@ export {
     PARALLEL,
     HANDLER,
     Runtime,
+    askAgent
 } from './src/Matiq.js';

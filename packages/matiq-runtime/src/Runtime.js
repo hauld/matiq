@@ -6,12 +6,17 @@ import { readFile } from 'fs/promises';
 import fs from 'fs';
 import {SFLOW} from './Nodes.js';
 import WebSocket from 'ws';
-import VmPY from './adapter/VmPY.js'
+import VmPY from './adapter/VmPY.js';
+import dotenv from 'dotenv';
+import HttpServer from './adapter/HttpServer.js'
+const httpServer = new HttpServer(3000, false);
 export default class Runtime{
     constructor(dirname){
+        dotenv.config();
         this.dirname = dirname;
         this.container = new Container();
         this.container.attachAdapter('VmPY', new VmPY());
+        this.container.attachAdapter('HttpServer', httpServer);
         this.controller = new Controller();
         this.queue = new TaskQueue();
         try{
@@ -157,6 +162,7 @@ export default class Runtime{
     start(standalone){
         if(!standalone) 
             this.connectHQ();
+        httpServer.listen();
         this.queue.tick(this.controller);
         this.controller.tick(this.container, this.queue);
     }
